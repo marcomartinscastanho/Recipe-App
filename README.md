@@ -26,4 +26,13 @@ In order to build the Docker Image, run ```docker build .``` inside the project 
 What this does is saying "build whatever Dockerfile is in the root of the project".
 
 #### Certificate Verification Error
-If you encounter a ```SSL: CERTIFICATE_VERIFY_FAILED``` error when building the Docker image, check [this workaround](https://stackoverflow.com/a/56131678/1971089) that fixes it.   
+If you encounter a ```SSL: CERTIFICATE_VERIFY_FAILED``` error when building the Docker image, check [this workaround](https://stackoverflow.com/a/56131678/1971089) that fixes it.
+
+### Docker Compose
+Docker Compose is a tool that allows to run the docker image easily from the project location.
+It allows to easily manage the different services that make out the project (e.g. the python applications, the database, etc).
+
+#### Docker Compose file
+Docker Compose is ```.yml``` file that contains the configuration for all of the that make out the project.  
+Check the comments inside the file for more details.  
+After filling the ```docker-compose.yml``` file run ```docker-compose build``` to build the image using the docker-compose configuration. 

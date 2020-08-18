@@ -1,0 +1,27 @@
+# The first line of the docker-compose file is the version of Docker Compose that we'll be writing the file for
+version: "3"
+
+# Next, we define the services that compose our application
+#  for now only the Python Django app
+services:
+  # what this says is that we have a service called "app"
+  app:
+    #the build context will be the current directory
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    # volumes allows to get the updates that we make to the project into the docker image in real time
+    # it maps a volume from local machine into the docker container where we're running the application
+    # this means that whenever we change a file or something in the project
+    # it'll be automatically updated in the container and we don't need to restart docker to get the changes into effect
+    volumes:
+      - ./app:/app  # maps the app directory in the project to the app directory in the docker image
+    # the command that is used to run the application in the docker container
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    # sh -c means shell run command
+    # the command runs the Django server
+    # available on all ip addresses that run on the docker container (that's what 0.0.0.0 does)
+    # running on port 8000 on the docker container, which is mapped to port 8000 on our local machine (see "ports:")
+    # so that we can run the application on the docker container and connect to it on port 8000 of our local machine

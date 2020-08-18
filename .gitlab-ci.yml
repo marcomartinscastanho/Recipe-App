@@ -1,7 +1,7 @@
 # First line
 image: python:latest
 services:
-  - docker:dind
+  - docker
 
 stages:
   - test

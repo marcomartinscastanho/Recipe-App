@@ -2,7 +2,8 @@
 services:
   - docker
 
-before_script: pip install docker-compose
+before_script:
+  - pip install docker-compose
 
 # this is a job called test, the runs whatever is in script
 test:

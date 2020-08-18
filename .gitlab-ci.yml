@@ -1,11 +1,15 @@
 # First line
+image: docker:latest
 services:
-  - docker
+  - docker:dind
 
-before_script:
-  - pip install docker-compose
+stages:
+  - test
 
-# this is a job called test, the runs whatever is in script
-test:
+# this is a job called step-test, the runs whatever is in script
+step-test:
+  stage: test
+  before_script:
+    - pip install docker-compose
   script:
     - docker-compose run app sh -c "python manage.py test && flake8"

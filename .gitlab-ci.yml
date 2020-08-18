@@ -1,16 +1,20 @@
-image: python:3.8
+image: docker:latest
+
+services:
+  - docker:dind
 
 stages:
   - test
   
 before_script:
   - docker info
-  - python --version
+  - apk update
+  - apk upgrade
+  - apk add python python-dev py-pip build-base
   - pip install docker-compose
 
 # this is a job called step-test, the runs whatever is in script
 step-test:
   stage: test
-  
   script:
     - docker-compose run app sh -c "python manage.py test && flake8"

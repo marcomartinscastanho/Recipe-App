@@ -9,9 +9,9 @@ stages:
 before_script:
   - apk update
   - apk upgrade
-  - apk add py-pip build-base curl
+  - apk add py-pip build-base curl python3
   - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  - python get-pip.py
+  - python3 get-pip.py
   - pip install docker-compose
 
 # this is a job called step-test, the runs whatever is in script

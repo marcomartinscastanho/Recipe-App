@@ -8,9 +8,6 @@ stages:
   
 before_script:
   - docker info
-  - apk update
-  - apk upgrade
-  - apk add python python-dev py-pip build-base
   - pip install docker-compose
 
 # this is a job called step-test, the runs whatever is in script

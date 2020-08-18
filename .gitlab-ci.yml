@@ -6,6 +6,7 @@ stages:
   
 before_script:
   - docker info
+  - python --version
   - pip install docker-compose
 
 # this is a job called step-test, the runs whatever is in script

@@ -7,7 +7,6 @@ stages:
   - test
   
 before_script:
-  - docker info
   - apk update
   - apk upgrade
   - apk add --update python python-dev py-pip build-base

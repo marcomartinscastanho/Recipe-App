@@ -35,4 +35,13 @@ It allows to easily manage the different services that make out the project (e.g
 #### Docker Compose file
 Docker Compose is ```.yml``` file that contains the configuration for all of the that make out the project.  
 Check the comments inside the file for more details.  
-After filling the ```docker-compose.yml``` file run ```docker-compose build``` to build the image using the docker-compose configuration. 
+After filling the ```docker-compose.yml``` file run ```docker-compose build``` to build the image using the docker-compose configuration.
+
+### Create Django project
+After setting the Docker Compose configuration, we can use it to run commands on the docker image.
+Therefore we can use it to run commands to create a Django project inside the container.  
+Run ```docker-compose run <service> sh -c "<command>"``` where ```<service>``` is the name of the service where we want ot run the command on,
+given that the service is on the ```docker-compose.yml``` file, and ```<command>``` is the command you want to run in the service.
+
+In this case, we run ```docker-compose run app sh -c "django-admin startproject app .```.  
+This runs the ```django-admin``` script to start a project called ```app``` and to start the project on the current location. 

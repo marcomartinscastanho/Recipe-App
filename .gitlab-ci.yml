@@ -1,4 +1,4 @@
-image:pythom:3.8
+image: pythom:3.8
 
 stages:
   - test

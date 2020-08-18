@@ -9,6 +9,7 @@ stages:
 step-test:
   stage: test
   before_script:
+    - docker info
     - pip install docker-compose
   script:
     - docker-compose run app sh -c "python manage.py test && flake8"

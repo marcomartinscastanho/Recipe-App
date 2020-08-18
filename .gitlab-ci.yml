@@ -1,4 +1,5 @@
-image: python:3.8
+image: gitlab/dind
+
 services:
   - docker
 

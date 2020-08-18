@@ -26,7 +26,7 @@ In order to build the Docker Image, run ```docker build .``` inside the project 
 What this does is saying "build whatever Dockerfile is in the root of the project".
 
 #### Certificate Verification Error
-If you encounter a ```SSL: CERTIFICATE_VERIFY_FAILED``` error when building the Docker image, check [this workaround](https://stackoverflow.com/a/56131678/1971089) that fixes it.
+If you encounter a ```SSL: CERTIFICATE_VERIFY_FAILED``` error when building the Docker image, check [this workaround](https://stackoverflow.com/a/56131678/1971089) that ignores SSL errors.
 
 ### Docker Compose
 Docker Compose is a tool that allows to run the docker image easily from the project location.
@@ -43,5 +43,14 @@ Therefore we can use it to run commands to create a Django project inside the co
 Run ```docker-compose run <service> sh -c "<command>"``` where ```<service>``` is the name of the service where we want ot run the command on,
 given that the service is on the ```docker-compose.yml``` file, and ```<command>``` is the command you want to run in the service.
 
-In this case, we run ```docker-compose run app sh -c "django-admin startproject app .```.  
-This runs the ```django-admin``` script to start a project called ```app``` and to start the project on the current location. 
+In this case, we run ```docker-compose run app sh -c "django-admin startproject app ."```.  
+This runs the ```django-admin``` script to start a project called ```app``` and to start the project on the current location.
+
+## Continuous Integration (CI)
+In order to have Continuous Integration on the project, create a ```.gitlab-ci.yml``` file in the root of the project.  
+The GitLab CI configuration file tells GitLab what to do everytime we push a change in the project.  
+
+For more information check the [GitLab CI/CD pipeline configuration reference](https://docs.gitlab.com/ee/ci/yaml/).
+
+## Flake8
+Flake8 is a Python linting tool which verifies pep8, pyflakes and circular complexity.

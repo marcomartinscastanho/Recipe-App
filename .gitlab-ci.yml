@@ -1,16 +1,16 @@
-image: gitlab/dind
-
 services:
   - docker
 
 stages:
   - test
+  
+before_script:
+  - docker info
+  - pip install docker-compose
 
 # this is a job called step-test, the runs whatever is in script
 step-test:
   stage: test
-  before_script:
-    - docker info
-    - pip install docker-compose
+  
   script:
     - docker-compose run app sh -c "python manage.py test && flake8"

@@ -43,5 +43,14 @@ Therefore we can use it to run commands to create a Django project inside the co
 Run ```docker-compose run <service> sh -c "<command>"``` where ```<service>``` is the name of the service where we want ot run the command on,
 given that the service is on the ```docker-compose.yml``` file, and ```<command>``` is the command you want to run in the service.
 
-In this case, we run ```docker-compose run app sh -c "django-admin startproject app .```.  
-This runs the ```django-admin``` script to start a project called ```app``` and to start the project on the current location. 
+In this case, we run ```docker-compose run app sh -c "django-admin startproject app ."```.  
+This runs the ```django-admin``` script to start a project called ```app``` and to start the project on the current location.
+
+## Continuous Integration (CI)
+In order to have Continuous Integration on the project, create a ```.gitlab-ci.yml``` file in the root of the project.  
+The GitLab CI configuration file tells GitLab what to do everytime we push a change in the project.  
+
+For more information check the [GitLab CI/CD pipeline configuration reference](https://docs.gitlab.com/ee/ci/yaml/).
+
+## Flake8
+Flake8 is a Python linting tool which verifies pep8, pyflakes and circular complexity.

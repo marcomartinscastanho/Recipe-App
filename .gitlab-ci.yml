@@ -1,5 +1,3 @@
-# First line
-image: python:latest
 services:
   - docker
 

@@ -6,11 +6,11 @@ Recipe App API source code
 
 [[_TOC_]]
 
-##Docker
+## Docker
 ### Dockerfile
 The Dockerfile is a text file that contains all commands, in order, needed to build a given image. It adheres to a specific format and set of instructions which you can find at [Dockerfile reference](https://docs.docker.com/engine/reference/builder/).  
 A valid Dockerfile must start with a ```FROM``` instruction. The ```FROM``` instruction initializes a new build stage and sets the Base Image for subsequent instructions. You can find many available Base Images in the [Docker Hub](https://hub.docker.com).  
-For this project, we use Python 3.8 alpine image.  
+For this project, we use **Python 3.8 alpine** image.  
 
 Check the comments in the Dockerfile of this project for more detail on each instruction.  
 
@@ -21,7 +21,7 @@ In order to install Python packages needed for each specific project, specify th
 For this project, we are using Django 3.0 and djangorestframework 3.11.  
 You can Python packages and their version history at [The Python Package Index](https://pypi.org/). 
 
-###Build
+### Build Image
 In order to build the Docker Image, run ```docker build .``` inside the project folder.  
 What this does is saying "build whatever Dockerfile is in the root of the project".
 

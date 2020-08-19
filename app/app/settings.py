@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -76,8 +76,19 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        # this is to get an environment variable, as defined in the docker-compose file
+        'HOST': os.environ.get('DB_HOST'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        # the benefit of this is that we can easily change the configuration when we run the app in different servers
+        # by simply changing them in the environment variables
+        # and we don't have to make any changes in the source code in order to modify the HOST name, the NAME, etc...
+        # really useful when running the app in production,
+        # because we can simply upload the Dockerfile to a service like Amazon ECS, k8s, etc
+        # and just set the appropriate environment variables and it should work
+
     }
 }
 

@@ -25,3 +25,34 @@ services:
     # available on all ip addresses that run on the docker container (that's what 0.0.0.0 does)
     # running on port 8000 on the docker container, which is mapped to port 8000 on our local machine (see "ports:")
     # so that we can run the application on the docker container and connect to it on port 8000 of our local machine
+    environment:
+      # name of the service that runs the database, which we named 'db' further down
+      - DB_HOST=db
+      # needs to equal what is on the POSTGRES_DB in the db service further down
+      - DB_NAME=app
+      # needs to equal what is on the POSTGRES_USER in the db service further down
+      - DB_USER=postgres
+      # needs to equal what is on the POSTGRES_USER in the db service further down
+      - DB_PASS=super_secret_password
+    # when we run docker-compose we can set services to depend on other services
+    depends_on:
+      # this means that the app service depends on the db service defined further down, which means 2 things:
+      # 1. the db service will start before the app service (because app depends on db)
+      # 2. the db service will be available via the network when using the hostname 'db'
+      #    i.e. when inside the app service, we can connect to hostname db
+      #    and it will connect to whatever container is running on the db service
+      - db
+
+  # in order to specify a custom db instead of the default SQLite3
+  db:
+    image: postgres:10-alpine
+    # set environmental variables
+    # see postgres alpine doc for all the available configuration options that can be passed in
+    # as environmental variables
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      # if this were to be deployed, the password should never be written here as plain text
+      # what should be done in production is to have on the build server (Jenkins, Travis, GitLab CI, etc)
+      # have an encrypted environmental variable that overrides this one when the application is pushed
+      - POSTGRES_PASSWORD=super_secret_password

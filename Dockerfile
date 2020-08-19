@@ -13,10 +13,32 @@ ENV PYTHONUNBUFFERED 1
 # copy the requirements file from the current location to the home directory of the Python image
 COPY ./requirements.txt /requirements.txt
 
+# install postgresql-client, whiche is a dependency required in order to install the psycopg2 package, listend on requirements.txt
+RUN apk add --update --no-cache postgresql-client
+# apk is the package manager that comes with alpine
+# add means add a package
+# --update means update the registry before adding
+# --no-cahce means don't store the registry index on the docker container
+# why? to minimize the number of extra files and packages that are included in the container
+# best practice to guarantee that the container has the smallest footprint possible
+# also not to include any extra dependencies on the system, which may cause unexpected side effects or security vulnerabilities
+
+# install temporary packages that need to be installed on the system while we run the requirements
+# and then we can remove them after the requirements have run
+# again to make sure the container has the minimum footprint possible
+# you don't want any extra dependencies in the dockerfile unless they're absolutely necessary
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+        gcc libc-dev linux-headers postgresql-dev
+# --virtual sets up an alias for our dependencies that we can use for easily remove all those dependencies later
+
 # install into the docker image all requirements in the requirements file
 # RUN pip install -r /requirements.txt
-# PS: all the tags in this command were added to ingore a certificate issue
+# PS: all the tags in this command were added as a workaround to ingore a certificate issue
+# TODO: an actual fix should be found for this issue, given that it also impacts the running of GitLab CI
 RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --no-cache-dir -r /requirements.txt
+
+# delete the temporary requirements we added above
+RUN apk del .tmp-build-deps
 
 # create a directory inside the docker image where we'll store the source code
 RUN mkdir /app

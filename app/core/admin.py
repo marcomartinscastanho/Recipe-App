@@ -7,11 +7,19 @@ from core import models
 class UserAdmin(BaseUserAdmin):
     ordering = ['id']
     list_display = ['email', 'name']
+    # fields that show on the change user page
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (_('Personal Info'), {'fields': ('name',)}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Important dates'), {'fields': ('last_login',)})
+    )
+    # fields that show on the add user page
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide', ),
+            'fields': ('email', 'password1', 'password2')
+            }),
     )
 
 

@@ -40,12 +40,23 @@ class AdminSiteTests(TestCase):
         self.assertContains(response, self.user.name)
         self.assertContains(response, self.user.email)
 
-    # test that the change page renders correctly
+    # test that the change page renders correctly (i.e. the page where the admins can edit user details)
     def test_user_change_page(self):
         """Test the user edit page works"""
 
         url = reverse('admin:core_user_change', args=[self.user.id])
         # /admin/core/user/<id>
+
+        result = self.client.get(url)
+
+        # assertions
+        self.assertEqual(result.status_code, 200)
+
+    # test that the create page render correctly (i.e. the page where admins can create new users)
+    def test_user_create_page(self):
+        """Test that the create user page works"""
+
+        url = reverse('admin:core_user_add')
 
         result = self.client.get(url)
 

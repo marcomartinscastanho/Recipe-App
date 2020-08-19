@@ -10,7 +10,7 @@ before_script:
   - apk update
   - apk upgrade
   - apk add py3-pip build-base
-  - pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --no-cache-dir docker-compose
+  - pip install docker-compose
 
 # this is a job called step-test, the runs whatever is in script
 step-test:

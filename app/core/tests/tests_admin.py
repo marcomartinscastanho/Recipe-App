@@ -25,6 +25,7 @@ class AdminSiteTests(TestCase):
 
     def test_users_listed(self):
         """Test that users are listed on the users page"""
+
         # core_user_changelist generates a url for our user list page and is defined in the django documentation
         # the reason to use the reverse function instead of typing the url manually is because
         # if we ever change the url in the future we don't have to change it everywhere in the tests because
@@ -38,3 +39,15 @@ class AdminSiteTests(TestCase):
         # and to check the fields we want are in the response body
         self.assertContains(response, self.user.name)
         self.assertContains(response, self.user.email)
+
+    # test that the change page renders correctly
+    def test_user_change_page(self):
+        """Test the user edit page works"""
+
+        url = reverse('admin:core_user_change', args=[self.user.id])
+        # /admin/core/user/<id>
+
+        result = self.client.get(url)
+
+        # assertions
+        self.assertEqual(result.status_code, 200)

@@ -54,3 +54,27 @@ For more information check the [GitLab CI/CD pipeline configuration reference](h
 
 ## Flake8
 Flake8 is a Python linting tool which verifies pep8, pyflakes and circular complexity.
+
+## Testing
+### Test-Driven Development (TDD)
+Test-Driven Development is simply writing the test before writing the code, assure the test is failing, and then writing the code to make the test pass.  
+One of the benefits is that you know the tests work.
+There's often cases in which you write unit test that you think is testing something, but it really isn't.
+For example, if you forget to add the ```test``` prefix in the function name, the test is never being picked up by the test runner, and therefore it seems like everything is working fine but in reality the test is just not running.
+So TDD helps eliminate false positives.  
+Also it helps improve the way you think about code, because before you write the code, you think that you need to write code that we can test.
+This means that you have to write testable code, which usually good quality code, easy to test and easy to maintain.
+
+### Mocking
+Mocking is when you override or change the behaviour of the dependencies of the code that you're testing.  
+Mocking is used to avoid any unintended side-effects and also to isolate specific pieces of code that we want to test.  
+For example, when testing a function that sends an email, there are 2 good reasons why you don't actually want to send an email everytime you run the test:
+- You should never write tests that depend on external services.  
+This is because you cen never guarantee that these services will be available at the point when you run the tests.  
+This would make the tests unpredictable and unreliable.
+- You don't want to be sending spam emails everytime the test is ran.  
+Even if using a fake address, those emails would still be clogging up some server somewhere.
+
+When you write the test, you can use Mocking to avoid sending an actual email.
+You could override the function in the dependency that sends the email, and replace it with a mock object.
+Using this mock object, you can avoid sending an actual email and instead just check that the function was called with the correct parameters. 

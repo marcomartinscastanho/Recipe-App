@@ -140,5 +140,5 @@ cython_debug/
 # idea filder
 .idea/
 
-# for now...
+# TODO: fix the SSL problem and remove this line to enable GitLab CI
 .gitlab-ci.yml

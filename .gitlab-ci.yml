@@ -9,7 +9,7 @@ stages:
 before_script:
   - apk update
   - apk upgrade
-  - apk add py3-pip build-base
+  - apk add py3-pip build-base ca-certificates
   - pip install docker-compose
 
 # this is a job called step-test, the runs whatever is in script

@@ -78,3 +78,16 @@ Even if using a fake address, those emails would still be clogging up some serve
 When you write the test, you can use Mocking to avoid sending an actual email.
 You could override the function in the dependency that sends the email, and replace it with a mock object.
 Using this mock object, you can avoid sending an actual email and instead just check that the function was called with the correct parameters. 
+
+### Testing Manually on Browser
+After fully configuring the Database (i.e. after commit [cd4b20bf](https://gitlab.altengroup.net/ska/knowledge-base/python/django/recipe-app-api/-/commit/cd4b20bf4e4caee9a36ed6be6649b727db2e6de1)) we can test the app manually on the browser.  
+For that, we must first start the server by running ```docker-compose up```.
+This will start the services in the docker-compose file, perform the commands in the command section of each service.
+In this example, it will begin by starting the db service (since the app service has a dependency on db) and then start the app service.
+When starting the app service, it will run the commands in the command section of the app service, i.e. wait for the db to be ready, apply all existing migrations to the db and run the server on the specified host and port.      
+Once the server is running, go to a browser and type ```localhost:8000/admin``` to get the admin portal.
+This will show the admin portal login page.
+If you haven't created an admin user, you need one.
+
+#### Creating superuser
+In order to keep the server running on the terminal, open a new terminal, run ```docker-compose run app sh -c "python manage.py createsuperuser"``` and follow the instructions.

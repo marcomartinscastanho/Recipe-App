@@ -52,4 +52,4 @@ class CommandTests(TestCase):
             call_command('wait_for_db')
 
             # assertions
-            self.assertEqual(gi.call_count, 1)
+            self.assertEqual(gi.call_count, 6)

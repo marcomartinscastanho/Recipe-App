@@ -40,10 +40,13 @@ After filling the ```docker-compose.yml``` file run ```docker-compose build``` t
 ### Create Django project
 After setting the Docker Compose configuration, we can use it to run commands on the docker image.
 Therefore we can use it to run commands to create a Django project inside the container.  
-Run ```docker-compose run <service> sh -c "<command>"``` where ```<service>``` is the name of the service where we want ot run the command on,
-given that the service is on the ```docker-compose.yml``` file, and ```<command>``` is the command you want to run in the service.
+Run ```docker-compose run --rm <service> sh -c "<command>"``` where ```<service>``` is the name of the service where we want ot run the command on,
+given that the service is on the ```docker-compose.yml``` file, and ```<command>``` is the command you want to run in the service.  
+What this does is run the service ```<service>``` to open a shell (hence the ```sh```) and run the command (hence the ```-c```) ```<command>```.  
+The ```--rm``` removes the container after it has ran the command.
+You can add this option on commands that you just want to run once and you don't want the docker container to linger on the system after it's run.
 
-In this case, we run ```docker-compose run app sh -c "django-admin startproject app ."```.  
+In this case, we run ```docker-compose run --rm app sh -c "django-admin startproject app ."```.  
 This runs the ```django-admin``` script to start a project called ```app``` and to start the project on the current location.
 
 ## Continuous Integration (CI)
@@ -90,4 +93,15 @@ This will show the admin portal login page.
 If you haven't created an admin user, you need one.
 
 #### Creating superuser
-In order to keep the server running on the terminal, open a new terminal, run ```docker-compose run app sh -c "python manage.py createsuperuser"``` and follow the instructions.
+In order to keep the server running on the terminal, open a new terminal, run ```docker-compose run --rm app sh -c "python manage.py createsuperuser"``` and follow the instructions.
+
+## Manage User Endpoints
+The Manage User endpoints allow us to create users, update them, change their password and to create authentication tokens,
+which can be used to authenticate requests to the other APIs in the projects.  
+We create these endpoints in a ```users``` app in the Django project.
+
+Run ```docker-compose run --rm app sh -c "python manage.py startapp user"``` to create a new app called user inside the Django project.  
+Once the app users is created, we can do some cleaning, removing files created by default that we're not gonna use since we're probably using them from the ```core``` app.  
+Remove the migrations folder, admin.py and modules.py, since we're using the ones in the core app, and tests.py since we're creating a sub-folder for tests.
+
+

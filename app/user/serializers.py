@@ -30,6 +30,21 @@ class UserSerializer(serializers.ModelSerializer):
         # and we can use it to create the user
         return get_user_model().objects.create_user(**validated_data)
 
+    # the purpose of this is we want to make sure the password is set using the set_password function
+    # instead of setting it to whichever value is provided
+    def update(self, instance, validated_data):
+        """Update a user setting the password correctly and return it"""
+        password = validated_data.pop('password', None)
+        # super calls the default update function from ModelSerializer
+        # whatever is left in the validated_data (everything except the password) we update it
+        user = super().update(instance, validated_data)
+
+        if password:
+            user.set_password(password)
+            user.save()
+
+        return user
+
 
 class AuthTokenSerializer(serializers.Serializer):
     """Serializer for the user authentication object"""

@@ -114,4 +114,17 @@ Also, if we want to revoke that token, we can do that in the database.
 The Manage User endpoint allows the authenticated users to update their own profile.
 This includes changing their name and password, and also seeing their user object, so they can see what all the values are currently set to.
 
-  
+### Test Manually on the browser  
+In order to test manually on the browser having access to a private endpoint you first need to create a user and obtain an authentication token.  
+- To create a user head over to ```http://localhost:8000/api/user/create``` and follow the procedure.
+- To obtain an authentication token, head over to ```http://localhost:8000/api/user/token``` and fill in the user information.
+
+Then, in order to access a private endpoint using the authentication token obtained, you need a way to modify the headers in the request.
+Browsers don't typically provide this feature by default, but adding some plug-ins or extensions will do it.  
+Add a request header called ```Authorization``` with value ```Token <the_token_obtained>``` and then head over to ```http://localhost:8000/api/user/me```.  
+You should see the user that is authenticated in the API, and have the fields to update the user's details. 
+
+When updating the user's details, the endpoint provides 2 different methods:
+- PUT - replace the entire resource on the db with the one we are sending now.  
+This means that you need to provide all the mandatory fields;
+- PATCH - only update the fields that we are specifying in the request;

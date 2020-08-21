@@ -109,3 +109,9 @@ The Create Token endpoint is an endpoint which is used to make HTTP POST request
 This means that the API uses token authentication, i.e. the way to login is to use this endpoint to generate a token, and then provide that token as the authentication header for future requests that require authentication.  
 The benefit of this is not needing to send the user's username and password in every single request made to the API. They're only sent once to create the token and then the token is used for further requests.
 Also, if we want to revoke that token, we can do that in the database.          
+
+## Manage User Endpoint
+The Manage User endpoint allows the authenticated users to update their own profile.
+This includes changing their name and password, and also seeing their user object, so they can see what all the values are currently set to.
+
+  

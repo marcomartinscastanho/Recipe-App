@@ -104,4 +104,8 @@ Run ```docker-compose run --rm app sh -c "python manage.py startapp user"``` to 
 Once the app users is created, we can do some cleaning, removing files created by default that we're not gonna use since we're probably using them from the ```core``` app.  
 Remove the migrations folder, admin.py and modules.py, since we're using the ones in the core app, and tests.py since we're creating a sub-folder for tests.
 
-
+### Create Token Endpoint
+The Create Token endpoint is an endpoint which is used to make HTTP POST requests to generate temporary **auth tokens** that can then be used to authenticate future requests with the API.  
+This means that the API uses token authentication, i.e. the way to login is to use this endpoint to generate a token, and then provide that token as the authentication header for future requests that require authentication.  
+The benefit of this is not needing to send the user's username and password in every single request made to the API. They're only sent once to create the token and then the token is used for further requests.
+Also, if we want to revoke that token, we can do that in the database.          

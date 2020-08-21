@@ -7,6 +7,7 @@ from rest_framework import status
 
 # reverse creates the user:create url and assigns it to the variable
 CREATE_USER_URL = reverse('user:create')
+TOKEN_URL = reverse('user:token')
 
 
 # helper function, since we'll be creating users quite often in the tests
@@ -53,8 +54,10 @@ class PublicUserApiTests(TestCase):
             'password': 'fake-123',
             'name': 'Test McTestington'
         }
+        # we create the user calling the function directly
         create_user(**payload)
 
+        # then we try to create it again through the API
         response = self.client.post(CREATE_USER_URL, payload)
 
         # assertions
@@ -78,3 +81,71 @@ class PublicUserApiTests(TestCase):
             email=payload['email']
         )
         self.assertFalse(user_exists)
+
+    # we don't need to have authentication in the create tokens API,
+    # given that the purpose of the API is to start the authentication
+    # hence the create tokens endpoint is public, so we can add the tests for it under this class
+
+    def test_create_token_for_user(self):
+        """Test that a token is created for the user"""
+        payload = {
+            'email': 'test@fake.com',
+            'password': 'fake-123'
+        }
+        # we create the user calling the function directly
+        create_user(**payload)
+
+        # and then we try to obtain an authentication token for this user,
+        # in order to use it in future requests that need authentication
+        response = self.client.post(TOKEN_URL, payload)
+
+        # assertion
+        self.assertIn('token', response.data)
+        # we only need to assert that the token is returned
+        # no need to assert that the token works, since it is obtained from the built-in django authentication system
+        # which is already extensively tested, so no need to test the tokens further
+        # don't overtest
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_token_invalid_credentials(self):
+        """Test that token is not created if invalid credentials are given"""
+
+        # we create the user calling the function directly
+        create_user(email='test@fake.com', password='fake-123')
+
+        payload = {
+            'email': 'test@fake.com',
+            'password': 'wr0ng-p@55w0rd'
+        }
+        response = self.client.post(TOKEN_URL, payload)
+
+        # assertions
+        # since we provided a wrong password for this user when requesting the authentication token,
+        # we expect that the token was not provided
+        self.assertNotIn('token', response.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_token_no_user(self):
+        """Test that token is not created if user doesn't exist"""
+        payload = {
+            'email': 'test@fake.com',
+            'password': 'fake-123'
+        }
+        # we don't create the user this time!
+        # db is reset between each test, so the previously run tests have no effect on this one
+
+        response = self.client.post(TOKEN_URL, payload)
+
+        # assertions
+        self.assertNotIn('token', response.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_token_missing_field(self):
+        """Test that email and password are required"""
+
+        response = self.client.post(TOKEN_URL, {'email': 'test@fake.com', 'password': ''})
+
+        # assertions
+        self.assertNotIn('token', response.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

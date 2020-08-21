@@ -1,4 +1,7 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
+# use this whenever you are outputting any message to the user
+# it's a good idea to pass them through this translation package to provide support easily for more languages
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 
@@ -26,3 +29,39 @@ class UserSerializer(serializers.ModelSerializer):
         # which will be the json data that was made in the HTTP POST
         # and we can use it to create the user
         return get_user_model().objects.create_user(**validated_data)
+
+
+class AuthTokenSerializer(serializers.Serializer):
+    """Serializer for the user authentication object"""
+
+    email = serializers.CharField()
+    password = serializers.CharField(
+        style={'input_type': 'password'},
+        # by default django trims leading or trailing whitespaces
+        # that would change the password set by the user, therefore we have to force it not to happen
+        trim_whitespace=False
+    )
+
+    # overridden from the django rest_framework
+    # is called automatically when we validate this serializer
+    def validate(self, attrs):
+        """Validate and authenticate the user"""
+        # every field that makes up the serializer (email and password)
+        # will be passed to the validate function as fields in the attrs dictionary
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        user = authenticate(
+            # the AuthTokenSerializer will be passed in the views
+            # and when a request is made, the views pass the request to the serialized inside the context
+            request=self.context.get('request'),
+            username=email,
+            password=password
+        )
+
+        if not user:
+            message = _('Unable to authenticate with provided credentials')
+            raise serializers.ValidationError(message, code='authentication')
+
+        attrs['user'] = user
+        return attrs

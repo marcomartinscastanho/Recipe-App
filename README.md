@@ -128,3 +128,13 @@ When updating the user's details, the endpoint provides 2 different methods:
 - PUT - replace the entire resource on the db with the one we are sending now.  
 This means that you need to provide all the mandatory fields;
 - PATCH - only update the fields that we are specifying in the request;
+
+# Recipe API
+All Recipe related endpoints are stored in a new app called ```recipe```.  
+Examples of such endpoints are endpoints for creating and updating recipes, tags and ingredients.
+## Tags Endpoint
+The Tags API allows to manage tags that can be assigned to recipes in order to help with sorting and filtering recipes in the system.
+
+
+
+

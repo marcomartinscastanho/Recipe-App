@@ -135,7 +135,9 @@ Examples of such endpoints are endpoints for creating and updating recipes, tags
 ## Tags Endpoint
 The Tags API allows to manage tags that can be assigned to recipes in order to help with sorting and filtering recipes in the system.
 
-## Ingredients
+## Ingredients Endpoint
 The Ingredients endpoint is very similar to the Tags endpoint, in that it allows to create and list ingredients which we can later assign to recipes for the purpose of filtering.  
 
+## Recipe Endpoint
+The Ingredients endpoint allows for users to add recipes.
 

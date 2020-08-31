@@ -40,3 +40,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         # prevent the user from updating the id when they may create or edit requests
         # best practice: you don't want the primary key to change
         read_only_fields = ('id',)
+
+
+class RecipeDetailSerializer(RecipeSerializer):
+    """Serialize a recipe detail"""
+    ingredients = IngredientSerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    # read_only means you can't create a recipe by providing these values

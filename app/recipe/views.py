@@ -33,7 +33,7 @@ class IngredientViewSet(BaseRecipeAttributesViewSet):
     serializer_class = serializers.IngredientSerializer
 
 
-# in this case we don't want just to create and list, we also want to allow for editing
+# in this case we don't want just to create and list, we also want to allow for editing and retrieving
 # so we use the whole ModelViewSet with all its properties
 # as opposed to the cases before in which we only wanted to create and list
 # so we used a GenericViewSet and added the Create and List functionalities via mixins
@@ -47,3 +47,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Retrieve the recipes for the authentication user"""
         return self.queryset.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        """Return appropriate serializer class"""
+        if self.action == 'retrieve':
+            return serializers.RecipeDetailSerializer
+
+        return self.serializer_class

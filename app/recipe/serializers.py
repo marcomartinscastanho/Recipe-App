@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Tag, Ingredient
+from core.models import Tag, Ingredient, Recipe
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -17,4 +17,26 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name')
+        read_only_fields = ('id',)
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    """Serialize a recipe"""
+
+    # because ingredients are references to other models, and not just another field of this model
+    # we need to specify this
+    ingredients = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Ingredient.objects.all()
+    )
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Ingredient.objects.all()
+    )
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'title', 'ingredients', 'tags', 'time_minutes', 'price', 'link')
+        # prevent the user from updating the id when they may create or edit requests
+        # best practice: you don't want the primary key to change
         read_only_fields = ('id',)

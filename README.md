@@ -138,6 +138,14 @@ The Tags API allows to manage tags that can be assigned to recipes in order to h
 ## Ingredients Endpoint
 The Ingredients endpoint is very similar to the Tags endpoint, in that it allows to create and list ingredients which we can later assign to recipes for the purpose of filtering.  
 
-## Recipe Endpoint
-The Ingredients endpoint allows for users to add recipes.
+## Recipes Endpoint
+### Recipe List
+The Recipe List Endpoint endpoint returns a summary of all the recipes the user has.  
+
+### Recipe Detail
+The Recipe List Endpoint endpoint returns all the details of a specific recipe.  
+The big difference is that the Recipe List endpoint returns only the ids of the ingredients and tags for each recipe, and the Recipe Detail returns the actual Ingredients and Tags names for the specified recipe.  
+This gives the client (e.g. front-end application) to have more flexibility on the ammount of data it receives when they get the recipe list.
+The reason for this, is that if you get all the information from each recipe when you just want to list them, the operation may get slow if each recipe has a lot of information (large list of ingredients, photo, etc.).
+
 

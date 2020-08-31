@@ -148,4 +148,8 @@ The big difference is that the Recipe List endpoint returns only the ids of the 
 This gives the client (e.g. front-end application) to have more flexibility on the ammount of data it receives when they get the recipe list.
 The reason for this, is that if you get all the information from each recipe when you just want to list them, the operation may get slow if each recipe has a lot of information (large list of ingredients, photo, etc.).
 
+### Image upload
+This endpoint allows to upload images to go along with Recipes.  
+In order to do that, an image field must be added to the Recipe model.  
 
+Additionally, in order to use the ImageField in Django, we need to install the Pillow python package, which is used for manipulating images which are uploaded in python.  

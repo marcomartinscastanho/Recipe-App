@@ -134,5 +134,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'   # this says that our media files will be accessed under 127.0.0.1:8000/media/
+
+MEDIA_ROOT = '/vol/web/media'   # tells Django where to store the media files
+STATIC_ROOT = '/vol/web/static'
 
 AUTH_USER_MODEL = 'core.User'

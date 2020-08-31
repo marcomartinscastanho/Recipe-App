@@ -13,8 +13,9 @@ ENV PYTHONUNBUFFERED 1
 # copy the requirements file from the current location to the home directory of the Python image
 COPY ./requirements.txt /requirements.txt
 
-# install postgresql-client, whiche is a dependency required in order to install the psycopg2 package, listend on requirements.txt
-RUN apk add --update --no-cache postgresql-client
+# install postgresql-client, which is a dependency required in order to install the psycopg2 package, listend on requirements.txt
+# install jpeg-dev, a library required in order to install the Pillow package in requirements
+RUN apk add --update --no-cache postgresql-client jpeg-dev
 # apk is the package manager that comes with alpine
 # add means add a package
 # --update means update the registry before adding
@@ -28,7 +29,7 @@ RUN apk add --update --no-cache postgresql-client
 # again to make sure the container has the minimum footprint possible
 # you don't want any extra dependencies in the dockerfile unless they're absolutely necessary
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
-        gcc libc-dev linux-headers postgresql-dev
+        gcc libc-dev linux-headers postgresql-dev musl-dev zlib zlib-dev
 # --virtual sets up an alias for our dependencies that we can use for easily remove all those dependencies later
 
 # install into the docker image all requirements in the requirements file
@@ -47,9 +48,24 @@ WORKDIR /app
 # copy the app folder from local to the docker image
 COPY ./app /app
 
+# storing files that may need to be share with other containers in servers
+RUN mkdir -p /vol/web/media
+RUN mkdir -p /vol/web/static
+# static files don't typically change during execution - they are usually associated with the design of the apps
+# media files may change during execution - they are typicaly associated with content inserted/edited by the users
+# -p means create all the directories specified in that path in case they don't exist
+
 # create a user called "user" that will run the app using docker
 # -D means this user only runs applications, he doesn't have a home directory
 RUN adduser -D user
+
+# while we are still runnig as root, we need to give our user owner rights over the directories we just created
+RUN chown -R user:user /vol/
+# -R means recursive, means this applies to all  subdirectories inside /vol/
+
+RUN chmod -R 755 /vol/web
+# means the owner can do everything with the directory, and other users (not owners) can read and execute from the directory
+
 # switch to that user
 USER user
 # why? Security reasons. If we don't do this, the image will run the application using the root account,

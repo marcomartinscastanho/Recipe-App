@@ -173,3 +173,57 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(ingredients.count(), 2)
         self.assertIn(ingredient1, ingredients)
         self.assertIn(ingredient2, ingredients)
+
+    # There are 2 ways to update an object using a REST API, via 2 different HTTP methods
+    # - PATCH: updates the fields that are provided in the payload (and only those fields)
+    #        - this means that fields omitted in the request are not modified in the object
+    # - PUT: replaces the object we're updating with the full object provided in the request
+    #      - this means that field omitted in request will be removed from the object
+
+    def test_partial_update_recipe(self):
+        """Test updating a recipe with patch"""
+        recipe = sample_recipe(user=self.user)
+        recipe.tags.add(sample_tag(user=self.user))
+        new_tag = sample_tag(user=self.user, name='Curry')
+
+        # we want to update these fields:
+        payload = {
+            'title': 'Chicken tikka',
+            'tags': [new_tag.id]
+        }
+        url = detail_url(recipe.id)
+        self.client.patch(url, payload)
+
+        # we created a recipe in the DB and retrieved a reference to it
+        # then we called an API to modify the recipe in the database
+        # but the reference we had obtained before doesn't update automatically
+        # we have to tell it to refresh
+        recipe.refresh_from_db()
+
+        # assertions
+        self.assertEqual(recipe.title, payload['title'])
+        tags = recipe.tags.all()
+        self.assertEqual(len(tags), 1)  # before we did this with .count(), both ways are ok
+        self.assertIn(new_tag, tags)
+
+    def test_full_update_recipe(self):
+        """Test updating a recipe with put"""
+        recipe = sample_recipe(user=self.user)
+        recipe.tags.add(sample_tag(user=self.user))
+        payload = {
+            'title': 'Spaghetti carbonara',
+            'time_minutes': 25,
+            'price': 5.00
+        }
+        url = detail_url(recipe.id)
+        self.client.put(url, payload)
+
+        recipe.refresh_from_db()
+
+        # assertions
+        self.assertEqual(recipe.title, payload['title'])
+        self.assertEqual(recipe.time_minutes, payload['time_minutes'])
+        self.assertEqual(recipe.price, payload['price'])
+        # because we did a put with no tags, tags should have been removed
+        tags = recipe.tags.all()
+        self.assertEqual(len(tags), 0)

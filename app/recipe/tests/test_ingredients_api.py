@@ -58,7 +58,7 @@ class PrivateIngredientsApiTests(TestCase):
             'other@fake.com',
             'test-123'
         )
-        Ingredient.objects.crate(user=user2, name='Vinegar')
+        Ingredient.objects.create(user=user2, name='Vinegar')
         ingredient = Ingredient.objects.create(user=self.user, name='Tumeric')
 
         response = self.client.get(INGREDIENTS_URL)

@@ -1,3 +1,6 @@
+import tempfile  # python function that allows to create temp files
+import os
+from PIL import Image   # Pillow package, create and test images
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -9,6 +12,11 @@ from recipe.serializers import RecipeSerializer, RecipeDetailSerializer
 
 # /api/recipe/recipes
 RECIPES_URL = reverse('recipe:recipe-list')
+
+
+def image_upload_url(recipe_id):
+    """"Return URL for recipe image upload"""
+    return reverse('recipe:recipe-upload-image', args=[recipe_id])
 
 
 # /api/recipe/recipes/1/
@@ -227,3 +235,49 @@ class PrivateRecipeApiTests(TestCase):
         # because we did a put with no tags, tags should have been removed
         tags = recipe.tags.all()
         self.assertEqual(len(tags), 0)
+
+
+class RecipeImageUploadTests(TestCase):
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            'test@fake.com',
+            'fake-123'
+        )
+        self.client.force_authenticate(self.user)
+        self.recipe = sample_recipe(user=self.user)
+
+    def tearDown(self) -> None:
+        # make suer image files created during tests are cleaned so they don't accumulate in the system
+        self.recipe.image.delete()
+
+    def test_upload_image_to_recipe(self):
+        """"Test uploading an image to recipe"""
+        url = image_upload_url(self.recipe.id)
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as ntf:
+            # Creates a black square 10x10 pixels
+            img = Image.new('RGB', (10, 10))
+            # writes the image referenced by ntf on top of the black square
+            img.save(ntf, format='JPEG')
+            # go back to the beginning of the file
+            ntf.seek(0)
+            # post the image
+            response = self.client.post(url, {'image': ntf}, format='multipart')
+            # format option needs to be set in order to tell Django this is a multipart request
+            # i.e. a form that consists on data as opposite to the default form that consists on json objects
+
+        self.recipe.refresh_from_db()
+
+        # assertions
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('image', response.data)
+        self.assertTrue(os.path.exists(self.recipe.image.path))
+
+    def test_upload_image_bad_request(self):
+        """"Test uploading an invalid image"""
+        url = image_upload_url(self.recipe.id)
+        # sending a not image
+        response = self.client.post(url, {'image': 'this is not an image'}, format='multipart')
+
+        # assertions
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
